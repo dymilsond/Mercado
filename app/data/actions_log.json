@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "data": "2026-03-18T11:41:24",
+    "tipo": "custo",
+    "titulo": "Cadastro de custos ausente",
+    "descricao": "100% das transações têm custo = R$ 0,00. Análises de margem, lucratividade e ROI estão bloqueadas. Base analisada: 8 dia(s).",
+    "usuario": "admin",
+    "resultado": "pendente",
+    "resolvido": false
+  },
+  {
+    "id": 2,
+    "data": "2026-03-18T11:41:26",
+    "tipo": "custo",
+    "titulo": "Cadastro de custos ausente",
+    "descricao": "100% das transações têm custo = R$ 0,00. Análises de margem, lucratividade e ROI estão bloqueadas. Base analisada: 8 dia(s).",
+    "usuario": "admin",
+    "resultado": "pendente",
+    "resolvido": false
+  }
+]
