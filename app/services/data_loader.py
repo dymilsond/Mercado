@@ -10,7 +10,7 @@ import streamlit as st
 # Caminhos
 # ---------------------------------------------------------------------------
 _BASE_DIR   = Path(__file__).resolve().parent.parent.parent
-EXCEL_PATH  = _BASE_DIR / "Consumo mercadinhos dezembro_25.xlsx"
+EXCEL_PATH  = _BASE_DIR / "Resumo dinamico transacoes.xlsx"
 SHEET_NAME  = "Resumo dinamico transacoes"
 _CUSTOS_PATH = Path(__file__).resolve().parent.parent / "data" / "custos.xlsx"
 
