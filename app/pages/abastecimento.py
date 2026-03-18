@@ -310,13 +310,54 @@ def render() -> None:
                 f"garantir estoque para segunda."
             )
 
-            # Tabela compacta em expander
+            # Tabela com saldo editável e pedido calculado
             with st.expander(f"📋 Lista completa — {cliente} ({n_prod_c} produtos)"):
-                df_tabela = df_c.copy()
-                df_tabela.columns = ["Produto", "Categoria", "Qtd", "Faturamento (R$)"]
-                df_tabela["Faturamento (R$)"] = df_tabela["Faturamento (R$)"].apply(
-                    lambda v: _brl(v)
+                st.caption(
+                    "✏️ Preencha o **Saldo** atual de cada produto. "
+                    "O **Pedido** é calculado automaticamente (Consumido − Saldo)."
                 )
-                st.dataframe(df_tabela, hide_index=True, use_container_width=True)
+
+                df_editor = df_c[["produto", "categoria", "quantidade", "faturamento"]].copy()
+                df_editor.columns = ["Produto", "Categoria", "Consumido", "Faturamento"]
+                df_editor["Saldo"] = 0
+
+                edited = st.data_editor(
+                    df_editor,
+                    key=f"saldo_{cliente}_{ini}_{fim}",
+                    hide_index=True,
+                    use_container_width=True,
+                    column_config={
+                        "Produto":      st.column_config.TextColumn("Produto",         disabled=True),
+                        "Categoria":    st.column_config.TextColumn("Categoria",       disabled=True),
+                        "Consumido":    st.column_config.NumberColumn("Consumido 📦",  disabled=True, format="%d unid"),
+                        "Faturamento":  st.column_config.NumberColumn("Faturamento",   disabled=True, format="R$ %.2f"),
+                        "Saldo":        st.column_config.NumberColumn("Saldo 🏷️",      min_value=0, step=1, format="%d unid"),
+                    },
+                )
+
+                # Calcular pedido com base no saldo digitado
+                edited["Pedido"] = (edited["Consumido"] - edited["Saldo"]).clip(lower=0).astype(int)
+                total_pedido = int(edited["Pedido"].sum())
+                itens_zerados = int((edited["Pedido"] == 0).sum())
+
+                col_tot, col_zer = st.columns(2)
+                col_tot.metric("🛒 Total a pedir", f"{_int(total_pedido)} unid.")
+                col_zer.metric("✅ Já cobertos (saldo ≥ consumo)", f"{itens_zerados} produtos")
+
+                # Export Excel
+                import io
+                buf = io.BytesIO()
+                export = edited[["Produto", "Categoria", "Consumido", "Saldo", "Pedido", "Faturamento"]].copy()
+                export["Faturamento"] = export["Faturamento"].round(2)
+                export.to_excel(buf, index=False, sheet_name="Pedido")
+                buf.seek(0)
+                st.download_button(
+                    label=f"⬇️ Exportar pedido — {cliente}",
+                    data=buf.getvalue(),
+                    file_name=f"pedido_{cliente}_{ini}_{fim}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key=f"dl_{cliente}_{ini}_{fim}",
+                    use_container_width=True,
+                )
 
             st.markdown("")  # espaço entre clientes
