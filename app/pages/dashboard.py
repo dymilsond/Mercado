@@ -220,7 +220,7 @@ def _render_recomendacoes(df: pd.DataFrame, kpis: dict, alertas: list) -> None:
 
     st.markdown(f"**{len(recs)} recomendação(ões) gerada(s) — ordenadas por prioridade**")
 
-    for rec in recs:
+    for i, rec in enumerate(recs):
         cor, icone = _PRIORITY_COLOR.get(rec.prioridade, ("#cccccc", "⚪"))
 
         st.markdown(
@@ -247,7 +247,7 @@ def _render_recomendacoes(df: pd.DataFrame, kpis: dict, alertas: list) -> None:
         )
 
         # Botão para registrar ação tomada
-        btn_key = f"acao_{rec.tipo}_{rec.titulo[:20]}"
+        btn_key = f"acao_{i}_{rec.tipo}"
         if st.button(f"✅ Registrar ação tomada", key=btn_key):
             registrar_acao(
                 tipo=rec.tipo,
