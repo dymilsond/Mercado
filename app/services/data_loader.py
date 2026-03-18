@@ -221,8 +221,16 @@ def _merge_custos(df: pd.DataFrame, custos: pd.DataFrame) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 # Ponto de entrada principal — com cache do Streamlit
 # ---------------------------------------------------------------------------
-@st.cache_data(ttl=300, show_spinner="Carregando dados...")
-def load_data() -> pd.DataFrame:
+def _file_mtime() -> float:
+    """Retorna o timestamp de modificação do Excel — usado como cache-buster."""
+    try:
+        return EXCEL_PATH.stat().st_mtime
+    except OSError:
+        return 0.0
+
+
+@st.cache_data(ttl=60, show_spinner="Carregando dados...")
+def load_data(_mtime: float = 0.0) -> pd.DataFrame:
     if not EXCEL_PATH.exists():
         raise FileNotFoundError(
             f"Arquivo Excel não encontrado: {EXCEL_PATH}\n"
@@ -234,6 +242,11 @@ def load_data() -> pd.DataFrame:
     df  = _transformar(raw)
     df  = _merge_custos(df, load_costs())
     return df
+
+
+def load_data_fresh() -> pd.DataFrame:
+    """Chama load_data com o mtime atual — força reload quando arquivo mudar."""
+    return load_data(_mtime=_file_mtime())
 
 
 # ---------------------------------------------------------------------------

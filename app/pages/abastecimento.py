@@ -10,7 +10,7 @@ import pandas as pd
 import streamlit as st
 
 from domain.design_tokens import CHART_PALETTE_CATEGORICAL, COLORS
-from services.data_loader import load_data
+from services.data_loader import load_data_fresh as load_data
 
 try:
     import plotly.express as px

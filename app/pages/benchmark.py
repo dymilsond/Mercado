@@ -12,7 +12,7 @@ from services.benchmark import (
     get_unit_time_comparison,
     get_unit_vs_average,
 )
-from services.data_loader import load_data
+from services.data_loader import load_data_fresh as load_data
 
 
 # ---------------------------------------------------------------------------

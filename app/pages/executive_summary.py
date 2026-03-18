@@ -7,7 +7,7 @@ from domain.contracts import SMALL_BASE_THRESHOLD_DAYS
 from domain.enums import AlertSeverity, Priority
 from services.actions_log import get_all
 from services.alerts import gerar_alertas
-from services.data_loader import load_data
+from services.data_loader import load_data_fresh as load_data
 from services.exporter import export_executive_summary_text, summary_txt_filename
 from services.finance import (
     get_cobertura_custo,

@@ -22,7 +22,7 @@ from services.data_loader import (
     get_metodos_pagamento,
     get_periodos,
     get_produtos,
-    load_data,
+    load_data_fresh as load_data,
 )
 from services.filters import apply_filters
 from services.metrics import (
