@@ -19,6 +19,7 @@ from auth.users_store import init_default_admin
 # Imports de páginas no topo para que o file watcher do Streamlit
 # monitore mudanças nesses arquivos e recarregue automaticamente
 # (reload forçado)
+import pages.abastecimento      # noqa: F401
 import pages.dashboard          # noqa: F401
 import pages.executive_summary  # noqa: F401
 import pages.benchmark          # noqa: F401
@@ -69,9 +70,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-_PAGES_ADMIN = ["📊 Resumo Executivo", "📈 Dashboard", "🏁 Benchmark", "⚙️ Administração"]
-_PAGES_USER  = ["📊 Resumo Executivo", "📈 Dashboard", "🏁 Benchmark"]
+_PAGES_ADMIN = ["🚚 Abastecimento", "📊 Resumo Executivo", "📈 Dashboard", "🏁 Benchmark", "⚙️ Administração"]
+_PAGES_USER  = ["🚚 Abastecimento", "📊 Resumo Executivo", "📈 Dashboard", "🏁 Benchmark"]
 _PAGE_MAP    = {
+    "🚚 Abastecimento":    "Abastecimento",
     "📊 Resumo Executivo": "Resumo Executivo",
     "📈 Dashboard":        "Dashboard",
     "🏁 Benchmark":        "Benchmark",
@@ -145,7 +147,10 @@ def _render_sidebar() -> str:
 
 
 def _render_page(pagina: str) -> None:
-    if pagina == "Resumo Executivo":
+    if pagina == "Abastecimento":
+        from pages.abastecimento import render
+        render()
+    elif pagina == "Resumo Executivo":
         from pages.executive_summary import render
         render()
     elif pagina == "Dashboard":
