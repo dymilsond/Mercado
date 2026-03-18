@@ -84,6 +84,12 @@ def render() -> None:
     data_max = pd.to_datetime(df_full["data"]).max().date()
     def_ini, def_fim = _default_weekend(df_full)
 
+    # Botão de reset seta flag ANTES dos widgets renderizarem
+    # (session_state só pode ser alterado antes do widget ser criado)
+    if st.session_state.pop("_abast_reset", False):
+        st.session_state["abast_ini"] = def_ini.date()
+        st.session_state["abast_fim"] = def_fim.date()
+
     with st.container():
         col_ini, col_fim, col_btn = st.columns([1, 1, 1])
         with col_ini:
@@ -104,10 +110,8 @@ def render() -> None:
             )
         with col_btn:
             st.markdown("<br>", unsafe_allow_html=True)
-            resetar = st.button("↩ Fim de semana", use_container_width=True)
-            if resetar:
-                st.session_state["abast_ini"] = def_ini.date()
-                st.session_state["abast_fim"] = def_fim.date()
+            if st.button("↩ Fim de semana", use_container_width=True):
+                st.session_state["_abast_reset"] = True
                 st.rerun()
 
     if ini > fim:
