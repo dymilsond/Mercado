@@ -7,11 +7,26 @@ import pandas as pd
 import streamlit as st
 
 # ---------------------------------------------------------------------------
-# Caminhos
+# Caminhos — busca o xlsx em múltiplos locais possíveis
 # ---------------------------------------------------------------------------
-_BASE_DIR   = Path(__file__).resolve().parent.parent.parent
-EXCEL_PATH  = _BASE_DIR / "Resumo dinamico transacoes.xlsx"
+_FILENAME   = "Resumo dinamico transacoes.xlsx"
 SHEET_NAME  = "Resumo dinamico transacoes"
+
+def _find_excel() -> Path:
+    """Localiza o arquivo Excel independente de onde o app é executado."""
+    candidates = [
+        Path(__file__).resolve().parent.parent.parent / _FILENAME,  # raiz do repo
+        Path(__file__).resolve().parent.parent / _FILENAME,          # dentro de app/
+        Path.cwd() / _FILENAME,                                       # cwd
+        Path.cwd().parent / _FILENAME,                                # um nível acima
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    return candidates[0]   # retorna o caminho padrão (vai gerar erro descritivo)
+
+EXCEL_PATH  = _find_excel()
+_BASE_DIR   = EXCEL_PATH.parent
 _CUSTOS_PATH = Path(__file__).resolve().parent.parent / "data" / "custos.xlsx"
 
 # ---------------------------------------------------------------------------
